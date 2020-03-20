@@ -1,6 +1,7 @@
 package com.kodilla;
 
 import javafx.application.Application;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -9,6 +10,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.BitSet;
+import java.util.HashSet;
+import java.util.Random;
 
 
 public class TicTacToe extends Application {
@@ -16,7 +20,7 @@ public class TicTacToe extends Application {
     private Image imageback = new Image("/file/tictacplant.png");
     private Image iks = new Image("/file/x.png");
     private Image circle = new Image("/file/circle.png");
-    //private FlowPane figure = new FlowPane();
+    private FlowPane turn = new FlowPane(Orientation.HORIZONTAL);
     private boolean isComputerTurn = true;
     ImageView show = new ImageView();
 
@@ -72,72 +76,110 @@ public class TicTacToe extends Application {
         primaryStage.show();
 
 
-        // set pictures type and size
+        // set 8 pictures type and size yes, i need so much
 
-        ImageView cross = new ImageView();
-        cross.setImage(iks);
-        cross.setFitWidth(150);
-        cross.setPreserveRatio(true);
-        cross.setSmooth(true);
-        cross.setCache(true);
+        int crossIndex ;
+        ImageView[] cross = new ImageView[9];
+        for ( crossIndex = 0; crossIndex < 9; crossIndex++ ) {
+
+            cross[crossIndex] = new ImageView();
+            cross[crossIndex].setImage(iks);
+            cross[crossIndex].setFitWidth(150);
+            cross[crossIndex].setPreserveRatio(true);
+            cross[crossIndex].setSmooth(true);
+            cross[crossIndex].setCache(true);
+
+            System.out.println(crossIndex+1);        }
+
+        int cirkleIndex = 9;
+        ImageView[] o = new ImageView[cirkleIndex];
+        for ( cirkleIndex = 0; cirkleIndex < 9; cirkleIndex++ ) {
+
+            o[cirkleIndex] = new ImageView();
+            o[cirkleIndex].setImage(circle);
+            o[cirkleIndex].setFitWidth(150);
+            o[cirkleIndex].setPreserveRatio(true);
+            o[cirkleIndex].setSmooth(true);
+            o[cirkleIndex].setCache(true);
+        }
+
+        int k = 9;
+        //
+        // logic operations
+        //
+        int[] logic = new int[k];
+        //
+        // button add
+        //
 
 
-        ImageView o = new ImageView();
-        o.setImage(circle);
-        o.setFitWidth(150);
-        o.setPreserveRatio(true);
-        o.setSmooth(true);
-        o.setCache(true);
+        Button[] button = new Button[k];
+
+        for ( k = 0; k < 9; k++) {
+            System.out.println("Guzik " + (k + 1));
 
 
-
-        //creature buttons
-
-        for (int i = 0; i < 9; i++) {
-            //buttons settings
-            Button button = new Button();
-            button.setBackground(Background.EMPTY);
-            button.setMaxWidth(Double.MAX_VALUE);
-            button.setMaxHeight(Double.MAX_VALUE);
-
-            GridPane.setHgrow(button, Priority.ALWAYS);
-            GridPane.setVgrow(button, Priority.ALWAYS);
+            button[k] = new Button();
+            button[k].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            button[k].setBackground(Background.EMPTY);
 
 
-            button.setOnMouseClicked(p -> {
-                System.out.println("Click on button");
-                button.setGraphic(cross);
-                if(isComputerTurn ) {
-                    System.out.println("Computer turn");
+            int finalCrossIndex = k;
+            int finalCirkleIndex = k;
+            int finalK = k;
+            int finalK1 = k;
+            button[k].setOnMouseClicked(e -> {
+                if ( isComputerTurn ) {
+                    button[finalK].setGraphic(cross[finalCrossIndex]);
+                    logic[finalK1] = 1;
+                    System.out.println("Dajesz krzyż " + (finalCrossIndex +1));
                 } else {
-                    System.out.println("Your turn");
-                    button.setGraphic(o);
+                    button[finalK].setGraphic(o[finalCirkleIndex]);
+                    logic[finalK1] = 2;
+                    System.out.println("dajesz kólko" + (finalCirkleIndex + 1));
                 }
                 isComputerTurn = !isComputerTurn;
+
             });
-
-            //button =  button.getOnMouseClicked();
-            if (i == 0)
-                grid.add(button, 0, 0);
-            if (i == 1)
-                grid.add(button, 0, 1);
-            if (i == 2)
-                grid.add(button, 0, 2);
-            if (i == 3)
-                grid.add(button, 1, 0);
-            if (i == 4)
-                grid.add(button, 1, 1);
-            if (i == 5)
-                grid.add(button, 1, 2);
-            if (i == 6)
-                grid.add(button, 2, 0);
-            if (i == 7)
-                grid.add(button, 2, 1);
-            if (i == 8)
-                grid.add(button, 2, 2);
-            //
-
-
+            logic[k] = logic[finalK1];
+            System.out.println(logic[k]);
         }
+
+        //
+        // give the place
+        //
+        int m = 0;
+        for (int i = 0; i < 3; i++ ) {
+            for ( int j = 0; j <3; j++ ) {
+
+                 if ( i == 0) {
+                     m = j;
+                     grid.add(button[m], i, j);
+                 } else if ( i == 1) {
+                     m = (j + 3);
+                     grid.add(button[m], i, j);
+                 } else if ( i == 2) {
+                     m = (j + 6);
+                     grid.add(button[m], i, j);
+                 }
+            }
+        }
+
+
+        //
+        //logika
+        //
+        //int sum = (logic[0] + logic[1] + logic[2]);
+        System.out.println("suma " + logic[0]);
+        /*if (((logic[0] + logic[1] + logic[2]) == 6)   || ((logic[0] + logic[3] + logic[6]) == 6) || ((logic[0] + logic[4] + logic[8]) == 6)) {
+            System.out.println("Wygraleś");
+        } else if ( ((logic[4] + logic[1] + logic[7]) == 6)  || ((logic[4] + logic[3] + logic[5]) == 6) || ((logic[4] + logic[2] + logic[6]) == 6)) {
+            System.out.println("Wygraleś");
+        } else if (((logic[6] + logic[7] + logic[8]) == 6)  || ((logic[2] + logic[5] + logic[8]) == 6)) {
+            System.out.println("Wygraleś");
+        }
+*/
+
+
     }
 }
